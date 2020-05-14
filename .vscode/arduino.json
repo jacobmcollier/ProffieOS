@@ -1,0 +1,7 @@
+{
+    "board": "proffieboard:stm32l4:K3495-L433RC",
+    "configuration": "usb=cdc,dosfs=sdspi,speed=80,opt=os",
+    "sketch": "ProffieOS.ino",
+    "port": "COM13",
+    "output": "ArduinoOutput"
+}
