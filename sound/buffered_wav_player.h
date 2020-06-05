@@ -28,8 +28,9 @@ public:
   bool PlayInCurrentDir(const char* name) {
     for (const char* dir = current_directory; dir; dir = next_current_directory(dir)) {
       PathHelper full_name(dir, name);
+      FileReader f;
       LOCK_SD(true);
-      bool exists = LSFS::Exists(full_name);
+      bool exists = f.Exists(full_name);
       LOCK_SD(false);
       // Fill up audio buffers before we lock the SD again
       AudioStreamWork::scheduleFillBuffer();

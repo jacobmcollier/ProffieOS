@@ -63,6 +63,7 @@ char* itoa( int value, char *string, int radix )
 #include "../common/linked_ptr.h"
 #include "../common/strfun.h"
 #include "../common/lsfs.h"
+#include "../common/path_helper.h"
 
 struct  Print {
   void print(const char* s) { puts(s); }

@@ -412,8 +412,9 @@ public:
     PathHelper fn(GetSaveDir(), filename);
     LOCK_SD(true);
     FileReader out;
-    LSFS::Remove(fn);
+    out.Remove(fn);
     out.Create(fn);
+    out.write_key_value("installed", install_time);
     out.write_key_value("preset", preset);
     out.write_key_value("end", "1");
     out.Close();
@@ -439,8 +440,9 @@ public:
   void WriteGlobalState(const char* filename) {
     LOCK_SD(true);
     FileReader out;
-    LSFS::Remove(filename);
+    out.Remove(filename);
     out.Create(filename);
+    out.write_key_value("installed", install_time);
 #ifdef ENABLE_AUDIO    
     out.write_key_value("volume", muted_volume_ ? muted_volume_ : dynamic_mixer.get_volume());
 #endif    
@@ -742,6 +744,7 @@ public:
 #endif
   }
 
+#ifdef ENABLE_SD
   void ListTracks(const char* dir) {
     if (!LSFS::Exists(dir)) return;
     for (LSFS::Iterator i2(dir); i2; ++i2) {
@@ -750,6 +753,7 @@ public:
       }
     }
   }
+#endif
 
   virtual void LowBatteryOff() {
     if (SaberBase::IsOn()) {

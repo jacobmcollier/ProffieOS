@@ -140,7 +140,6 @@
 #include <Wire.h>
 #undef private
 
-#include <FS.h>
 #define digitalWriteFast digitalWrite
 #include <stm32l4_wiring_private.h>
 #include <stm32l4xx.h>
@@ -161,6 +160,17 @@
 #include <math.h>
 #include <malloc.h>
 
+#ifdef ENABLE_ADAFRUIT_SPIFLASH
+
+#include <SdFat.h>
+#include <Adafruit_SPIFlash.h>
+
+Adafruit_FlashTransport_SPI flashTransport(EXTERNAL_FLASH_USE_CS, EXTERNAL_FLASH_USE_SPI);
+Adafruit_SPIFlash flash(&flashTransport);
+FatFileSystem fatfs;
+
+#endif
+
 #ifdef ENABLE_SERIALFLASH
 
 // This is a hack to let me access the internal stuff..
@@ -172,6 +182,15 @@
 #undef private
 #undef protected
 #endif
+
+#ifdef ENABLE_SD
+
+#include <FS.h>
+#include "common/lsfs.h"
+
+#endif
+
+#include "common/path_helper.h"
 
 #ifdef ENABLE_SNOOZE
 #define startup_early_hook DISABLE_startup_early_hook
@@ -322,7 +341,6 @@ bool AmplifierIsActive();
 void MountSDCard();
 const char* GetSaveDir();
 
-#include "common/lsfs.h"
 #include "common/strfun.h"
 
 // Double-zero terminated array of search paths.
@@ -625,7 +643,9 @@ LatchingButtonTemplate<FloatingButtonBase<BLADE_DETECT_PIN>>
     BladeDetect(BUTTON_BLADE_DETECT, BLADE_DETECT_PIN, "blade_detect");
 #endif
 
+#ifdef ENABLE_SD
 #include "common/sd_test.h"
+#endif
 
 class Commands : public CommandParser {
  public:
@@ -675,6 +695,43 @@ class Commands : public CommandParser {
       return true;
     }
 #endif    
+
+#ifdef ENABLE_ADAFRUIT_SPIFLASH
+    if (!strcmp(cmd, "dir")) {
+      if (!e || fatfs.exists(e)) {
+        File dir = fatfs.open(e);
+        if (dir) {
+          if (dir.isDirectory()) {
+            STDOUT.println("Listing children of directory:");
+            File child = dir.openNextFile();
+            while (child) {
+              char filename[64];
+              child.getName(filename, sizeof(filename));
+              
+              // Print the file name and mention if it's a directory.
+              STDOUT.print("- "); Serial.print(filename);
+              if (child.isDirectory()) {
+                STDOUT.print(" (directory)");
+              } else {
+                STDOUT.print(" ");
+                STDOUT.println(child.size(), DEC);
+              }
+              child = dir.openNextFile();
+            }
+            STDOUT.println();
+            STDOUT.println("Done listing files.");
+          } else {
+            STDOUT.println("Error, expected a directory!");
+          }
+        } else {
+          STDOUT.println("Error, failed to open directory!");
+        }
+      } else {
+        STDOUT.println("No such directory.");
+      }
+      return true;
+    }
+#endif
 
 #ifdef ENABLE_SERIALFLASH
     if (!strcmp(cmd, "ls")) {
@@ -1248,6 +1305,9 @@ class Commands : public CommandParser {
 #ifndef DISABLE_DIAGNOSTIC_COMMANDS    
     STDOUT.println(" effects - list current effects");
 #endif    
+#ifdef ENABLE_ADAFRUIT_SPIFLASH
+    STDOUT.println(" dir [directory] - list files on Flash.");
+#endif
 #ifdef ENABLE_SERIALFLASH
     STDOUT.println("Serial Flash memory management:");
     STDOUT.println("   ls, rm <file>, format, play <file>, effects");
@@ -1275,6 +1335,7 @@ public:
   static const char* response_footer() { return ""; }
 };
 
+#ifdef ENABLE_SERIAL
 class Serial3Adapter {
 public:
   static void begin() { Serial3.begin(115200); }
@@ -1284,6 +1345,7 @@ public:
   static const char* response_header() { return "-+=BEGIN_OUTPUT=+-\n"; }
   static const char* response_footer() { return "-+=END_OUTPUT=+-\n"; }
 };
+#endif
 
 #ifdef USB_CLASS_WEBUSB
 class WebUSBSerialAdapter {
@@ -1535,7 +1597,9 @@ SSD1306 display;
 // Define this to record clashes to sd card as CSV files
 // #define CLASH_RECORDER
 
+#ifdef CLASH_RECORDER
 #include "scripts/clash_recorder.h"
+#endif
 
 #ifdef GYRO_CLASS
 // Can also be gyro+accel.
@@ -1572,7 +1636,7 @@ void setup() {
   digitalWrite(boosterPin, HIGH);
 #endif
 
-  Serial.begin(9600);
+  Serial.begin(115200);
 #if VERSION_MAJOR >= 4
   // TODO: Figure out if we need this.
   // Serial.blockOnOverrun(false);
@@ -1596,6 +1660,21 @@ void setup() {
 #endif
   }
 
+#ifdef ENABLE_ADAFRUIT_SPIFLASH
+  // Initialize flash library and check its chip ID.
+  // TODO: Set Flash Reset Pin
+  if (flash.begin()) {
+    Serial.print("Flash chip JEDEC ID: 0x"); Serial.println(flash.getJEDECID(), HEX);
+
+    if (fatfs.begin(&flash)) {
+      Serial.println("Mounted filesystem!");
+    } else {
+      Serial.println("Error, failed to initialize flash chip!");
+    }
+    } else {
+      Serial.println("Error, failed to mount filesystem!");
+    }
+#endif
 #ifdef ENABLE_SERIALFLASH
   SerialFlashChip::begin(serialFlashSelectPin);
 #endif
@@ -1652,14 +1731,20 @@ void mtp_lock_storage(bool lock) {
 #include "mtp/mtpd.h"
 MTPD mtpd;
 
-#ifdef ENABLE_SD
-#include "mtp/mtp_storage_sd.h"
-MTPStorage_SD sd_storage(&mtpd);
+#ifdef ENABLE_ADAFRUIT_SPIFLASH
+// Not Implemented
+//#include "mtp/mtp_storage_sd.h"
+//MTPStorage_SD sd_storage(&mtpd);
 #endif
 
 #ifdef ENABLE_SERIALFLASH
 #include "mtp/mtp_storage_serialflash.h"
 MTPStorage_SerialFlash serialflash_storage(&mtpd);
+#endif
+
+#ifdef ENABLE_SD
+#include "mtp/mtp_storage_sd.h"
+MTPStorage_SD sd_storage(&mtpd);
 #endif
 
 #endif  // MTP_RX_ENDPOINT

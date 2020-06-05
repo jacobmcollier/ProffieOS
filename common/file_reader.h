@@ -4,9 +4,19 @@
 #include <new>
 #include <algorithm>
 
+#ifdef ENABLE_SD
 #include "lsfs.h"
+#endif
+
+#include "path_helper.h"
 
 // inline void* operator new(size_t, void* p) { return p; }
+
+#ifdef ENABLE_ADAFRUIT_SPIFLASH
+#define IF_ASF(X) X
+#else
+#define IF_ASF(X)
+#endif
 
 #ifdef ENABLE_SD
 #define IF_SD(X) X
@@ -24,6 +34,7 @@
 
 #define RUN_ALL(X)				\
   switch (type_) {				\
+    IF_ASF(case TYPE_ASF: return asf_file_.X;)	\
     IF_SD(case TYPE_SD: return sd_file_.X;)	\
     IF_SF(case TYPE_SF: return sf_file_.X;)	\
     IF_MEM(case TYPE_MEM: return mem_file_.X;)	\
@@ -31,6 +42,7 @@
 
 #define RUN_ALL_VOID(X)				\
   switch (type_) {				\
+    IF_ASF(case TYPE_ASF: asf_file_.X; return;)	\
     IF_SD(case TYPE_SD: sd_file_.X; return;)	\
     IF_SF(case TYPE_SF: sf_file_.X; return;)	\
     IF_MEM(case TYPE_MEM: mem_file_.X; return;)	\
@@ -89,6 +101,16 @@ public:
   ~FileReader() { Close(); }
   bool Open(const char* filename) {
     Close();
+#ifdef ENABLE_ADAFRUIT_SPIFLASH
+    new (&asf_file_) File;
+    type_ = TYPE_ASF;
+    asf_file_ =fatfs.open(filename);
+    if (asf_file_) {
+      return true;
+    } else {
+      Close();
+    }
+#endif
 #ifdef ENABLE_SERIALFLASH
     new (&sf_file_) SerialFlashFile;
     type_ = TYPE_SF;
@@ -114,6 +136,16 @@ public:
 
   bool OpenFast(const char* filename) {
     Close();
+#ifdef ENABLE_ADAFRUIT_SPIFLASH
+    new (&asf_file_) File;
+    type_ = TYPE_ASF;
+    asf_file_ =fatfs.open(filename);
+    if (asf_file_) {
+      return true;
+    } else {
+      Close();
+    }
+#endif
 #ifdef ENABLE_SERIALFLASH
     new (&sf_file_) SerialFlashFile;
     type_ = TYPE_SF;
@@ -138,6 +170,14 @@ public:
   }
   bool Create(const char* filename) {
     Close();
+#ifdef ENABLE_ADAFRUIT_SPIFLASH
+    new (&asf_file_) File;
+    asf_file_ = fatfs.open(filename, FILE_WRITE);
+    if (asf_file_) {
+      type_ = TYPE_ASF;
+      return true;
+    }
+#endif
 #ifdef ENABLE_SD
     new (&sd_file_) File;
     sd_file_ = LSFS::OpenForWrite(filename);
@@ -145,6 +185,26 @@ public:
       type_ = TYPE_SD;
       return true;
     }
+#endif
+    return false;
+  }
+  bool Remove(const char* filename) {
+    Close();
+#ifdef ENABLE_ADAFRUIT_SPIFLASH
+    return fatfs.remove(filename);
+#endif
+#ifdef ENABLE_SD
+    return LSFS::Remove(filename);
+#endif
+    return false;
+  }
+  bool Exists(const char* filename) {
+    Close();
+#ifdef ENABLE_ADAFRUIT_SPIFLASH
+    return fatfs.exists(filename);
+#endif
+#ifdef ENABLE_SD
+    return LSFS::Exists(filename);
 #endif
     return false;
   }
@@ -157,6 +217,7 @@ public:
   }
   bool IsOpen() {
     switch (type_) {
+      IF_ASF(case TYPE_ASF: return !!asf_file_;)
       IF_SD(case TYPE_SD: return !!sd_file_;)
       IF_SF(case TYPE_SF: return !!sf_file_;)
       IF_MEM(case TYPE_MEM: return !!mem_file_;)
@@ -165,6 +226,7 @@ public:
   };
   void Close() {
     switch (type_) {
+      IF_ASF(case TYPE_ASF: asf_file_.close(); asf_file_.~File(); return;)
       IF_SD(case TYPE_SD: return sd_file_.close(); sd_file_.~File();)
       IF_SF(case TYPE_SF: return sf_file_.close(); sf_file_.~SerialFlashFile();)
       IF_MEM(case TYPE_MEM: return mem_file_.close(); mem_file_.~MemFile();)
@@ -207,6 +269,7 @@ public:
   }
   int Peek() {
     switch (type_) {
+      IF_ASF(case TYPE_ASF: return asf_file_.peek(););
       IF_SD(case TYPE_SD: return sd_file_.peek(););
 #ifdef ENABLE_SERIALFLASH
       case TYPE_SF: {
@@ -223,6 +286,14 @@ public:
 	return mem_file_.peek();
     }
     return -1;
+  }
+  bool Expect(const char* str) {
+    while (*str) {
+      if (Peek() != *str) return false;
+      Read();
+      str++;
+    }
+    return true;
   }
   int AlignRead(int n) {
 #ifdef ENABLE_SD
@@ -404,6 +475,9 @@ public:
   }
 private:
   enum {
+#ifdef ENABLE_ADAFRUIT_SPIFLASH
+    TYPE_ASF,
+#endif
 #ifdef ENABLE_SD
     TYPE_SD,
 #endif
@@ -413,6 +487,7 @@ private:
     TYPE_MEM
   } type_;
   union {
+    IF_ASF(File asf_file_;)
     IF_SD(File sd_file_;)
     IF_SF(SerialFlashFile sf_file_;)
     MemFile mem_file_;

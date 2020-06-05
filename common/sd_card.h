@@ -1,9 +1,10 @@
 #ifndef COMMON_SDCARD_H
 #define COMMON_SDCARD_H
 
-#include "lsfs.h"
-
 #if defined(ENABLE_SD) && VERSION_MAJOR >= 4
+
+#include "lsfs.h"
+#include "path_helper.h"
 
 // Unmount sdcard when we don't need it anymore.
 class SDCard : Looper {

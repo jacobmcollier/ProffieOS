@@ -76,6 +76,8 @@ enum SaberPins {
 #if PROFFIEBOARD_VERSION - 0 != 2
 #error Please select Proffieboard V2 in Tools->Board
 #endif
+#if ENABLE_SD
 #if DOSFS_SDCARD - 0 == 0
 #error Tools->DOSFS should be set to SDCARD (SPI)
+#endif
 #endif

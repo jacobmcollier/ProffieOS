@@ -57,6 +57,7 @@ char* itoa( int value, char *string, int radix )
 // Posix file primitives
 
 #include "lsfs.h"
+#include "path_helper.h"
 
 #define HEX 16
 

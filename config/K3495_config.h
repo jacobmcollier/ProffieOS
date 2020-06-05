@@ -8,7 +8,7 @@ const unsigned int maxLedsPerStrip = 144;
 #define ENABLE_AUDIO
 #define ENABLE_MOTION
 #define ENABLE_WS2811
-#define ENABLE_SD
+#define ENABLE_ADAFRUIT_SPIFLASH
 #endif
 
 #ifdef CONFIG_PRESETS

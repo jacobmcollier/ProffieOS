@@ -153,11 +153,7 @@ public:
     return c == '\n' || c == '\r' || c == ' ' || c == '\t';
   }
 
-  bool OpenPresets(FileReader* f, const char* filename) {
-    PathHelper fn(GetSaveDir(), filename);
-    if (!f->Open(fn))
-      return false;
-
+  bool ValidatePresets(FileReader* f) {
     if (f->FileSize() < 4) return false;
     int pos = 0;
 #ifndef KEEP_SAVEFILES_WHEN_PROGRAMMING    
@@ -165,11 +161,7 @@ public:
     f->readVariable(variable);
     if (strcmp(variable, "installed")) return false;
     if (f->Read() != '=') return false;
-    const char* tmp = install_time;
-    while (*tmp) {
-      if (f->Read() != *tmp) return false;
-      tmp++;
-    }
+    if (!f->Expect(install_time)) return false;
     if (f->Read() != '\n') return false;
     pos = f->Tell();
 #endif
@@ -186,13 +178,27 @@ public:
     return true;
   }
 
+  bool OpenPresets(FileReader* f, const char* filename) {
+    PathHelper fn(GetSaveDir(), filename);
+    if (!f->Open(fn)) {
+      STDOUT << "Failed to open: " << filename << "\n";
+      return false;
+    }
+    if (ValidatePresets(f)) {
+      return true;
+    } else {
+      f->Close();
+      return false;
+    }
+  }
+
   bool UpdateINI() {
     FileReader f, f2;
     PathHelper ini_fn(GetSaveDir(), "presets.ini");
     if (OpenPresets(&f2, "presets.tmp")) {
       uint8_t buf[512];
       // Found valid tmp file
-      LSFS::Remove(ini_fn);
+      f.Remove(ini_fn);
       f.Create(ini_fn);
       f.write_key_value("installed", install_time);
       while (f2.Available()) {
@@ -201,7 +207,7 @@ public:
 	    f.Write(buf, to_copy) != to_copy) {
 	  f2.Close();
 	  f.Close();
-	  LSFS::Remove(ini_fn);
+	  f.Remove(ini_fn);
 	  return false;
 	}
       }
@@ -216,6 +222,10 @@ public:
     FileReader f;
     PathHelper ini_fn(GetSaveDir(), "presets.ini");
     f.Create(ini_fn);
+    if (!f.Create(ini_fn)) {
+      STDOUT << "Failed to open " << ini_fn << " for write\n";
+      return false;
+    }
     f.write_key_value("installed", install_time);
     CurrentPreset tmp;
     for (size_t i = 0; i < current_config->num_presets; i++) {
@@ -268,7 +278,7 @@ public:
       }
     }
     PathHelper tmp_fn(GetSaveDir(), "presets.tmp");
-    LSFS::Remove(tmp_fn);
+    out.Remove(tmp_fn);
     out.Create(tmp_fn);
     out.write_key_value("installed", install_time);
     CurrentPreset tmp;

@@ -328,6 +328,36 @@ class Effect {
       STDOUT.print("Scanning sound font: ");
       STDOUT.print(dir);
 
+#ifdef ENABLE_ADAFRUIT_SPIFLASH
+      if (fatfs.exists(dir)) {
+        File directory = fatfs.open(dir);
+        if (directory) {
+          if (directory.isDirectory()) {
+            File child = directory.openNextFile();
+            while (child) {
+              if (child.isDirectory()) {
+                char dirName[128];
+                child.getName(dirName, sizeof(dirName));
+                strcat(dirName, "/");
+                char* dirNameEnd = dirName + strlen(dirName);
+                File child2 = child.openNextFile();
+                while (child) {
+                  char filename[64];
+                  child.getName(filename, sizeof(filename));
+                  strcpy(dirNameEnd, filename);
+                  ScanAll(dirName, filename);
+                }
+              } else {
+                char filename[64];
+                child.getName(filename, sizeof(filename));
+                ScanAll(dir, filename);
+              }
+            }
+          }
+        }
+      }
+#endif
+
 #ifdef ENABLE_SERIALFLASH
       // Scan serial flash.
       SerialFlashChip::opendir();
