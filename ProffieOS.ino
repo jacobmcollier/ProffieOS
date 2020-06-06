@@ -167,6 +167,7 @@
 
 Adafruit_FlashTransport_SPI flashTransport(EXTERNAL_FLASH_USE_CS, EXTERNAL_FLASH_USE_SPI);
 Adafruit_SPIFlash flash(&flashTransport);
+const SPIFlash_Device_t flashDevice = EXTERNAL_FLASH_DEVICE;
 FatFileSystem fatfs;
 
 #endif
@@ -1661,9 +1662,12 @@ void setup() {
   }
 
 #ifdef ENABLE_ADAFRUIT_SPIFLASH
+  // Set Flash Reset# Pin
+  pinMode(EXTERNAL_FLASH_RST_NOT, OUTPUT);
+  digitalWrite(EXTERNAL_FLASH_RST_NOT, HIGH);
+
   // Initialize flash library and check its chip ID.
-  // TODO: Set Flash Reset Pin
-  if (flash.begin()) {
+  if (flash.begin(&flashDevice)) {
     Serial.print("Flash chip JEDEC ID: 0x"); Serial.println(flash.getJEDECID(), HEX);
 
     if (fatfs.begin(&flash)) {
