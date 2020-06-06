@@ -18,32 +18,20 @@ Preset presets[] = {
    { "SmthJedi", "tracks/mars.wav",
     StylePtr<InOutSparkTip<EASYBLADE(BLUE, WHITE), 300, 800> >(), "blue"},
    { "SmthGrey", "tracks/mercury.wav",
-    StyleFirePtr<RED, YELLOW>(), "fire"},
-   { "SmthFuzz", "tracks/uranus.wav",
     StyleNormalPtr<RED, WHITE, 300, 800>(), "red"},
-   { "RgueCmdr", "tracks/venus.wav",
-    StyleFirePtr<BLUE, CYAN>(), "blue fire"},
-   { "TthCrstl", "tracks/mars.wav",
+   { "SmthFuzz", "tracks/uranus.wav",
     StylePtr<InOutHelper<EASYBLADE(OnSpark<GREEN>, WHITE), 300, 800> >(), "green"},
-   { "TeensySF", "tracks/mercury.wav",
+   { "RgueCmdr", "tracks/venus.wav",
     StyleNormalPtr<WHITE, RED, 300, 800, RED>(), "white"},
-   { "SmthJedi", "tracks/uranus.wav",
+   { "TthCrstl", "tracks/mars.wav",
     StyleNormalPtr<AudioFlicker<YELLOW, WHITE>, BLUE, 300, 800>(), "yellow"},
-   { "SmthGrey", "tracks/venus.wav",
+   { "TeensySF", "tracks/mercury.wav",
     StylePtr<InOutSparkTip<EASYBLADE(MAGENTA, WHITE), 300, 800> >(), "magenta"},
-   { "SmthFuzz", "tracks/mars.wav",
-    StyleNormalPtr<Gradient<RED, BLUE>, Gradient<CYAN, YELLOW>, 300, 800>(), "gradient"},
-   { "RgueCmdr", "tracks/mercury.wav",
-    StyleRainbowPtr<300, 800>(), "rainbow"},
-   { "TthCrstl", "tracks/uranus.wav",
-    StyleStrobePtr<WHITE, Rainbow, 15, 300, 800>(), "strobe"},
-   { "TeensySF", "tracks/venus.wav",
-    &style_pov, "POV"},
-   { "SmthJedi", "tracks/mars.wav",
-    &style_charging, "Battery\nLevel"}
+   { "SmthJedi", "tracks/uranus.wav",
+    StyleStrobePtr<WHITE, Rainbow, 15, 300, 800>(), "strobe"}
 };
 BladeConfig blades[] = {
- { 0, WS281XBladePtr<144, bladePin, Color8::GRB, PowerPINS<bladePowerPin2, bladePowerPin3> >(), CONFIGARRAY(presets) },
+ { 0, SimpleBladePtr<CreeXPE2RedTemplate<1000>, CreeXPE2GreenTemplate<0>, CreeXPE2BlueTemplate<240>, CreeXPE2WhiteTemplate<550>, bladePowerPin1, bladePowerPin2, bladePowerPin3, bladePowerPin4>(), CONFIGARRAY(presets) },
 };
 #endif
 
