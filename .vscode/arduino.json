@@ -1,6 +1,6 @@
 {
     "board": "proffieboard:stm32l4:K3495-L433RC",
-    "configuration": "usb=cdc,dosfs=sdspi,speed=80,opt=os",
+    "configuration": "speed=80,opt=o2,upload_method=swdMethod",
     "sketch": "ProffieOS.ino",
     "port": "COM13",
     "output": "ArduinoOutput"
