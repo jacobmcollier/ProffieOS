@@ -49,6 +49,7 @@
 #endif
 
 // #define ENABLE_DEBUG
+// #define ENABLE_DEVELOPER_COMMANDS
 
 
 //
@@ -584,6 +585,9 @@ ArgParserInterface* CurrentArgParser;
 #define CONFIG_PROP
 #include CONFIG_FILE
 #undef CONFIG_PROP
+
+#include "props/saber_k3495_buttons.h"
+#define PROP_TYPE SaberK3495Buttons
 
 #ifndef PROP_TYPE
 #include "props/saber.h"
