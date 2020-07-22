@@ -29,8 +29,8 @@ enum SaberPins {
   // Memory card
   sdCardSelectPin = 4,            // PB14
 
-  amplifierPin = 24,              // Amplifier enable pin PH1
-  boosterPin = 15,                // Booster enable pin   PH0
+  amplifierPin = 24,              // Amplifier enable pin    PH1
+  boosterPin = 1,                 // Booster enable pin      PB10
   motionSensorInterruptPin = 12,  // motion sensor interrupt PC13
 
   // No fastled support yet

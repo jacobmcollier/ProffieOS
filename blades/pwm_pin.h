@@ -81,7 +81,9 @@ void LSanalogWriteSetup(uint32_t pin) {
 }
 
 void LSanalogWriteTeardown(uint32_t pin) {
+#ifndef ENABLE_AL8807
   pinMode(pin, INPUT_ANALOG);
+#endif
   TeardownTimer(g_APinDescription[pin].pwm_instance);
 }
 

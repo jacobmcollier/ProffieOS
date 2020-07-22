@@ -1,6 +1,6 @@
 {
-    "board": "proffieboard:stm32l4:K3495-L433RC",
-    "configuration": "speed=80,opt=o1,upload_method=swdMethod",
+    "board": "proffieboard:stm32l4:K3495-L433CC",
+    "configuration": "speed=80,opt=o3,upload_method=swdMethod",
     "sketch": "ProffieOS.ino",
     "port": "COM13",
     "output": "ArduinoOutput"

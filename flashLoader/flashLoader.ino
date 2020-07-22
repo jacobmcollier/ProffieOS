@@ -84,6 +84,10 @@ void setup() {
   Serial.println("");
   Serial.println("SPI Flash CLI Interface");
 
+  // Set Power Enable Pin
+  pinMode(PIN_POWER_ENABLE, OUTPUT);
+  digitalWrite(PIN_POWER_ENABLE, HIGH);
+
   // Set Flash Reset# Pin
   pinMode(EXTERNAL_FLASH_RST_NOT, OUTPUT);
   digitalWrite(EXTERNAL_FLASH_RST_NOT, HIGH);
@@ -202,6 +206,15 @@ int cmd_format() {
     Serial.print("Error, f_mount failed with error code: "); Serial.println(r, DEC);
     while(1) yield();
   }
+
+  Serial.print("fs_type:   "); Serial.println(elmchamFatfs.fs_type, DEC);
+  Serial.print("pdrv:      "); Serial.println(elmchamFatfs.pdrv, DEC);
+  Serial.print("n_fats:    "); Serial.println(elmchamFatfs.n_fats, DEC);
+  Serial.print("n_rootdir: "); Serial.println(elmchamFatfs.n_rootdir, DEC);
+  Serial.print("csize:     "); Serial.println(elmchamFatfs.csize, DEC);
+  Serial.print("last_clst: "); Serial.println(elmchamFatfs.last_clst, DEC);
+  Serial.print("n_fatent:  "); Serial.println(elmchamFatfs.n_fatent, DEC);
+  Serial.print("fsize:     "); Serial.println(elmchamFatfs.fsize, DEC);
 
   // Setting label
   Serial.println("Setting disk label to: " DISK_LABEL);

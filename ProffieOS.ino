@@ -1636,9 +1636,11 @@ void setup() {
   SAVE_MODER(C, 2);
   SAVE_MODER(H, 3);
 
+  // Set Power Enable Pin
   // TODO enable/disable as needed
-  pinMode(boosterPin, OUTPUT);
-  digitalWrite(boosterPin, HIGH);
+  // boosterPin is assigned the same pin number, not sure if it's actually used or not...
+  pinMode(PIN_POWER_ENABLE, OUTPUT);
+  digitalWrite(PIN_POWER_ENABLE, HIGH);
 #endif
 
   Serial.begin(115200);
@@ -1727,6 +1729,9 @@ void setup() {
     talkie.Say(talkie_not_found_15, 15);
   }
 #endif // ENABLE_AUDIO && ENABLE_SD
+
+  // Enable Watchdog Timer
+  STM32.wdtEnable(10000); // 10 seconds
 }
 
 #ifdef MTP_RX_ENDPOINT
@@ -1764,4 +1769,7 @@ void loop() {
   mtpd.loop();
 #endif
   Looper::DoLoop();
+
+  // Enable Watchdog Timer
+  STM32.wdtReset();
 }

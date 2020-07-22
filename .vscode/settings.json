@@ -2,6 +2,29 @@
     "files.associations": {
         "initializer_list": "cpp",
         "xutility": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "atomic": "cpp",
+        "deque": "cpp",
+        "fstream": "cpp",
+        "ios": "cpp",
+        "iosfwd": "cpp",
+        "istream": "cpp",
+        "list": "cpp",
+        "memory": "cpp",
+        "numeric": "cpp",
+        "ostream": "cpp",
+        "random": "cpp",
+        "set": "cpp",
+        "sstream": "cpp",
+        "streambuf": "cpp",
+        "vector": "cpp",
+        "xhash": "cpp",
+        "xiosbase": "cpp",
+        "xstring": "cpp",
+        "xtree": "cpp",
+        "*.tcc": "cpp",
+        "functional": "cpp",
+        "limits": "cpp",
+        "tuple": "cpp"
     }
 }
