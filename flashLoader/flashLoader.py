@@ -92,4 +92,4 @@ print("Flash Loading Complete!")
 # python flashLoader.py comPort Path
 #
 # Example
-# python flashLoader.py com14 C:\Users\jacob\Downloads\Sound_Fonts
+# python flashLoader.py com14 C:\Users\jacob\Downloads\Sound_Fonts\Small

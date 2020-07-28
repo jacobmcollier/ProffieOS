@@ -1637,8 +1637,6 @@ void setup() {
   SAVE_MODER(H, 3);
 
   // Set Power Enable Pin
-  // TODO enable/disable as needed
-  // boosterPin is assigned the same pin number, not sure if it's actually used or not...
   pinMode(PIN_POWER_ENABLE, OUTPUT);
   digitalWrite(PIN_POWER_ENABLE, HIGH);
 #endif
@@ -1732,6 +1730,9 @@ void setup() {
 
   // Enable Watchdog Timer
   STM32.wdtEnable(10000); // 10 seconds
+
+  // Turn on on boot
+  prop.On();
 }
 
 #ifdef MTP_RX_ENDPOINT
@@ -1764,6 +1765,8 @@ MTPStorage_SD sd_storage(&mtpd);
 
 #include "common/clock_control.h"
 
+uint32_t shutdown_timer_;
+
 void loop() {
 #ifdef MTP_RX_ENDPOINT
   mtpd.loop();
@@ -1772,4 +1775,12 @@ void loop() {
 
   // Enable Watchdog Timer
   STM32.wdtReset();
+
+  // Shutdown Timer
+  if (prop.IsOn()) {
+    shutdown_timer_ = millis();
+  } else if ((millis() - shutdown_timer_) > 600000) {
+    // Shutdown if prop is off for 10 minutes
+    digitalWrite(PIN_POWER_ENABLE, LOW);
+  }
 }

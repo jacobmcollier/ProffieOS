@@ -109,12 +109,12 @@ public:
       case EVENTID(BUTTON_AUX, EVENT_FIRST_CLICK_SHORT, MODE_OFF | BUTTON_POWER):
         STDOUT.println("Volume Down");
         if (dynamic_mixer.get_volume() > 0) {
-          dynamic_mixer.set_volume(std::max<int>(0,
-            dynamic_mixer.get_volume() - VOLUME * 0.25));
+          dynamic_mixer.set_volume(std::max<int>(0, dynamic_mixer.get_volume() - VOLUME * 0.25));
         } else {
           dynamic_mixer.set_volume(VOLUME);
         }
-        beeper.Beep(0.5, 2000);
+        talkie.SayNumber(dynamic_mixer.get_volume()*100/VOLUME);
+        talkie.Say(spPERCENT);
         STDOUT.print("Current Volume: ");
         STDOUT.println(dynamic_mixer.get_volume());
         return true;
@@ -143,11 +143,8 @@ public:
 
       // Battery Level
       case EVENTID(BUTTON_AUX, EVENT_FIRST_HELD_LONG, MODE_OFF):
-        talkie.SayDigit((int)floorf(battery_monitor.battery()));
-        talkie.Say(spPOINT);
-        talkie.SayDigit(((int)floorf(battery_monitor.battery() * 10)) % 10);
-        talkie.SayDigit(((int)floorf(battery_monitor.battery() * 100)) % 10);
-        talkie.Say(spVOLTS);
+        talkie.SayNumber((int)floorf(battery_monitor.battery_percent()));
+        talkie.Say(spPERCENT);
         return true;
       
       // Button Lock

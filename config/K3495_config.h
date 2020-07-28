@@ -14,13 +14,11 @@ const unsigned int maxLedsPerStrip = 144;
 
 #ifdef CONFIG_PRESETS
 Preset presets[] = {
-    { "DarkSaber", "tracks/venus.wav", StyleNormalPtr<RED,   WHITE, 300, 800>(), "red"},
-    { "DarkSaber", "tracks/venus.wav", StyleNormalPtr<GREEN,   WHITE, 300, 800>(), "green"},
-    { "DarkSaber", "tracks/venus.wav", StyleNormalPtr<BLUE,   WHITE, 300, 800>(), "blue"},
-    { "Darkside",  "tracks/venus.wav", StyleNormalPtr<RED,   WHITE, 300, 800>(), "red"},
-    { "Lightside", "tracks/venus.wav", StyleNormalPtr<WHITE, RED,   300, 800>(), "white"},
-    { "DarkSaber", "tracks/venus.wav", StyleNormalPtr<AudioFlicker<YELLOW, WHITE>, BLUE, 300, 800>(), "yellow"},
-    { "DarkSaber", "tracks/venus.wav", StyleStrobePtr<WHITE, Rainbow, 15, 300, 800>(), "strobe"}
+    { "Lightside", "tracks/venus.wav", StyleNormalPtr<BLUE, WHITE,   300, 800>(), "Lightside_Solid_Blue"},
+    { "Darkside",  "tracks/venus.wav", StyleNormalPtr<RED, WHITE, 300, 800>(), "Darkside_Solid_Red"},
+    { "Darkside",  "tracks/venus.wav", StyleNormalPtr<AudioFlicker<RED, WHITE>, WHITE, 300, 800>(), "Darkside_Flicker_Red"},
+    { "DarkSaber", "tracks/venus.wav", StyleNormalPtr<WHITE, WHITE, 300, 800>(), "DarkSaber_Solid_White"},
+    { "DarkSaber", "tracks/venus.wav", StyleNormalPtr<AudioFlicker<WHITE, Black>, WHITE, 300, 800>(), "DarkSaber_Flicker_White"},
 };
 
 struct RedLED {
