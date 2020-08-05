@@ -62,4 +62,8 @@ typedef Rgb<255, 31, 15> Tomato;
 typedef Rgb<255, 255, 255> White;
 typedef Rgb<255, 255, 0> Yellow;
 
+typedef Rgb<000, 255, 225> IceBlue;
+typedef Rgb<100, 255, 100> SilverWhite;
+typedef Rgb<100, 000, 255> Purple;
+
 #endif

@@ -8,7 +8,6 @@
 // Turn On - short click while OFF
 // Turn Off - hold and wait till blade is off while ON
 // Blast Effect - short click while ON
-// Force Effect - double click while ON
 // Color Change Mode - hold POWER + short click AUX while ON to enter or exit mode, twist hilt to change color
 // Volume Down - hold POWER + short click AUX while OFF (Wraps)
 // AUX
@@ -87,15 +86,6 @@ public:
         SaberBase::DoBlast();
         return true;
 
-      // Force effect
-      case EVENTID(BUTTON_POWER, EVENT_SECOND_SAVED_CLICK_SHORT, MODE_ON):
-        if (button_disable_) {
-          return true;
-        }
-        STDOUT.println("DoForce");
-        SaberBase::DoForce();
-        return true;
-
       // Color Change Mode
       case EVENTID(BUTTON_AUX, EVENT_FIRST_CLICK_SHORT, MODE_ON | BUTTON_POWER):
         if (button_disable_) {
@@ -154,6 +144,7 @@ public:
         } else {
           button_disable_ = true;
         }
+        beeper.Beep(0.5, 2000.0);
         return true;
 
       // Lockup End

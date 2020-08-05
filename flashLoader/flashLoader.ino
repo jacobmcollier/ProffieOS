@@ -91,6 +91,21 @@ void setup() {
   // Set Flash Reset# Pin
   pinMode(EXTERNAL_FLASH_RST_NOT, OUTPUT);
   digitalWrite(EXTERNAL_FLASH_RST_NOT, HIGH);
+
+  // Turn off LEDs
+  int bladePowerPin1 = 13;            // blade power control PA1
+  int bladePowerPin2 = 19;            // blade power control PB8
+  int bladePowerPin3 = 18;            // blade power control PA8
+  int bladePowerPin4 = 10;            // blade power control PB3
+
+  pinMode(bladePowerPin1, OUTPUT);
+  pinMode(bladePowerPin2, OUTPUT);
+  pinMode(bladePowerPin3, OUTPUT);
+  pinMode(bladePowerPin4, OUTPUT);
+  digitalWrite(bladePowerPin1, LOW);
+  digitalWrite(bladePowerPin2, LOW);
+  digitalWrite(bladePowerPin3, LOW);
+  digitalWrite(bladePowerPin4, LOW);
   
   // Initialize flash library and check its chip ID.
   if (!flash.begin(&flashDevice)) {
