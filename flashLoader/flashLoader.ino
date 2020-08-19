@@ -58,7 +58,9 @@ int (*commands_func[])(){
     &cmd_delete,
     &cmd_dir,
     &cmd_mkdir,
-    &cmd_rmdir
+    &cmd_rmdir,
+    &cmd_rawread,
+    &cmd_rawwipe
 };
 
 //List of command names
@@ -69,7 +71,9 @@ const char *commands_str[] = {
     "delete",
     "dir",
     "mkdir",
-    "rmdir"
+    "rmdir",
+    "rawread",
+    "rawwipe"
 };
 
 int num_commands = sizeof(commands_str) / sizeof(char *);
@@ -422,6 +426,54 @@ int cmd_rmdir(){
       Serial.print(args[1]);
       Serial.println(" does not exist");
     }
+  }
+}
+
+int cmd_rawread(){
+  if (strlen(args[1]) == 0){
+    Serial.println("Invalid parameter");
+  }
+  else{
+    char *argsPtr;
+    uint32_t sector = strtoul(args[1], &argsPtr, 16);
+    if ( sector < flash.size()/512 )
+    {
+      uint8_t buf[512];
+      flash.readBuffer(sector*512, buf, 512);
+
+      Serial.print("raw ");
+      if ( sector < 0x10   ) Serial.print("0");
+      if ( sector < 0x100  ) Serial.print("0");
+      if ( sector < 0x1000 ) Serial.print("0");
+
+      Serial.print(sector, HEX);
+      Serial.print(" : ");
+
+      for(uint32_t col = 0; col < 512; col++)
+      {
+        uint8_t val = buf[col];
+
+        if ( val < 16 ) Serial.print("0");
+        Serial.print(val, HEX);
+        Serial.print(" ");
+      }
+
+      Serial.println();
+    }
+    else{
+      Serial.println("Invalid sector number");
+    }
+  }
+}
+
+int cmd_rawwipe(){
+  Serial.println("Wiping Flash...");
+  if ( flash.eraseChip() )
+  {
+    Serial.println("Flash Wiped");
+  }
+  else{
+    Serial.println("Flash Wiped Failed");
   }
 }
 

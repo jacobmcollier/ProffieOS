@@ -648,6 +648,10 @@ LatchingButtonTemplate<FloatingButtonBase<BLADE_DETECT_PIN>>
     BladeDetect(BUTTON_BLADE_DETECT, BLADE_DETECT_PIN, "blade_detect");
 #endif
 
+#ifdef ENABLE_ADAFRUIT_SPIFLASH
+#include "common/flash_test.h"
+#endif
+
 #ifdef ENABLE_SD
 #include "common/sd_test.h"
 #endif
@@ -736,6 +740,14 @@ class Commands : public CommandParser {
       }
       return true;
     }
+
+    #ifndef DISABLE_DIAGNOSTIC_COMMANDS
+    if (!strcmp(cmd, "flashtest")) {
+      FlashTestHelper flashtester;
+      flashtester.TestFont();
+      return true;
+    }
+#endif
 #endif
 
 #ifdef ENABLE_SERIALFLASH
@@ -1312,6 +1324,7 @@ class Commands : public CommandParser {
 #endif    
 #ifdef ENABLE_ADAFRUIT_SPIFLASH
     STDOUT.println(" dir [directory] - list files on Flash.");
+    STDOUT.println(" flashtest - benchmark flash chip");
 #endif
 #ifdef ENABLE_SERIALFLASH
     STDOUT.println("Serial Flash memory management:");

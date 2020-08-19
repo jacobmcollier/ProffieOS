@@ -104,7 +104,7 @@ public:
 #ifdef ENABLE_ADAFRUIT_SPIFLASH
     new (&asf_file_) File;
     type_ = TYPE_ASF;
-    asf_file_ =fatfs.open(filename);
+    asf_file_ = fatfs.open(filename);
     if (asf_file_) {
       return true;
     } else {
@@ -139,7 +139,7 @@ public:
 #ifdef ENABLE_ADAFRUIT_SPIFLASH
     new (&asf_file_) File;
     type_ = TYPE_ASF;
-    asf_file_ =fatfs.open(filename);
+    asf_file_ = fatfs.open(filename);
     if (asf_file_) {
       return true;
     } else {

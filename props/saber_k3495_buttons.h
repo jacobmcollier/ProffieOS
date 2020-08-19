@@ -8,7 +8,7 @@
 // Turn On - short click while OFF
 // Turn Off - hold and wait till blade is off while ON
 // Blast Effect - short click while ON
-// Color Change Mode - hold POWER + short click AUX while ON to enter or exit mode, twist hilt to change color
+// Color Change Mode - short click AUX while ON to enter or exit mode, twist hilt to change color
 // Volume Down - hold POWER + short click AUX while OFF (Wraps)
 // AUX
 // Next Preset - short click while OFF
@@ -87,7 +87,7 @@ public:
         return true;
 
       // Color Change Mode
-      case EVENTID(BUTTON_AUX, EVENT_FIRST_CLICK_SHORT, MODE_ON | BUTTON_POWER):
+      case EVENTID(BUTTON_AUX, EVENT_FIRST_SAVED_CLICK_SHORT, MODE_ON):
         if (button_disable_) {
           return true;
         }
