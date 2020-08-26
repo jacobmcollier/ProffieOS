@@ -221,7 +221,7 @@ public:
   bool CreateINI() {
     FileReader f;
     PathHelper ini_fn(GetSaveDir(), "presets.ini");
-    f.Create(ini_fn);
+    f.Remove(ini_fn);
     if (!f.Create(ini_fn)) {
       STDOUT << "Failed to open " << ini_fn << " for write\n";
       return false;
@@ -273,8 +273,8 @@ public:
     if (!OpenPresets(&f, "presets.ini")) {
       if (!UpdateINI()) CreateINI();
       if (!OpenPresets(&f, "presets.ini")) {
-	STDOUT << "SAVING FAILED!!!!\n";
-	return;
+        STDOUT << "SAVING FAILED!!!!\n";
+        return;
       }
     }
     PathHelper tmp_fn(GetSaveDir(), "presets.tmp");

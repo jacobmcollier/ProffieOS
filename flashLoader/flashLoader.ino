@@ -54,6 +54,7 @@ void _outbyte(int c);
 int (*commands_func[])(){
     &cmd_help,
     &cmd_format,
+    &cmd_read,
     &cmd_write,
     &cmd_delete,
     &cmd_dir,
@@ -67,6 +68,7 @@ int (*commands_func[])(){
 const char *commands_str[] = {
     "help",
     "format",
+    "read",
     "write",
     "delete",
     "dir",
@@ -259,6 +261,48 @@ int cmd_format() {
 
   // Done!
   Serial.println("Filesystem Mounted");
+}
+
+int cmd_read(){
+  if (strlen(args[1]) == 0){
+    Serial.println("Error, Invalid file/path");
+  }
+  else{
+    if (fatfs.exists(args[1])) {
+      File readFile = fatfs.open(args[1], FILE_READ);
+      if (!readFile) {
+        Serial.println("Error, failed to open file!");
+      }
+      else{
+        Serial.print("Prepare for file (");
+        uint32_t fileSize = 0;
+        fileSize = readFile.size();
+        Serial.print(fileSize, DEC);
+        Serial.println("B) to be transferred...");
+
+        // Send file via xmodem protocol
+        int sts = XmodemTransmit1K(&xmodem_fetch_chunk, &readFile, fileSize);
+        if (sts > 0)
+        {
+          Serial.println("");
+          Serial.println("File Transferred");
+        }
+        else {
+          Serial.print("Error, xmodem File Transfer Error, ");
+          Serial.println(sts, DEC);
+        }
+        readFile.close();
+
+        // Reset read timeout
+        Serial.setTimeout(SERIAL_READ_TIMEOUT);
+      }
+    }
+    else{
+      Serial.print("Error, ");
+      Serial.print(args[1]);
+      Serial.println(" doesn't exist");
+    }
+  }
 }
 
 int cmd_write(){
@@ -498,6 +542,18 @@ void xmodem_store_chunk(
   
   File *writeFile = (File *)funcCtx;
   writeFile->write(xmodemBuffer, xmodemSize);
+}
+
+void xmodem_fetch_chunk(
+  /* Pointer to the function context (can be used for anything) */
+  void *funcCtx,
+  /* Pointer to the XMODEM send buffer (fetch data into here) */
+  void *xmodemBuffer,
+  /* Number of bytes that should be fetched (and stored into the XMODEM send buffer) */
+  int xmodemSize){
+  
+  File *readFile = (File *)funcCtx;
+  readFile->read(xmodemBuffer, xmodemSize);
 }
 
 //--------------------------------------------------------------------+

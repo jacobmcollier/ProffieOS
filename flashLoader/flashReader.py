@@ -2,22 +2,46 @@ import argparse
 import serial
 import sys
 import os
-import time
+from xmodem import XMODEM
 
 # Requires PySerial - pip install pyserial
+# Requires xmodem   - pip install xmodem
+
 
 # Declare function calls
 def error(msg):
     print ('\r\nError: %s' % msg)
     sys.exit(1)
 
+def getc(size, timeout=1):
+    return port.read(size) or None
+
+def putc(data, timeout=1):
+    return port.write(data)  # note that this ignores the timeout
+
+def readPort(msg, err):
+    while 1:
+            response = port.readline()
+            print(response)
+            if b'Error' in response:
+                # Error, Quit
+                error(err)
+
+            if msg in response:
+                # Success, move on
+                break
+
 
 # Main program ####################################################################
 print("Flash Reader Started")
 
+# Setup xmodem calls
+modem = XMODEM(getc, putc)
+
 # Parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('port', help='Port Name', metavar = 'Port Name')
+parser.add_argument('file', help = 'File Name', metavar = 'File Name')
 args = parser.parse_args()
 
 # Open serial port
@@ -26,39 +50,22 @@ try:
 except serial.serialutil.SerialException as msg:
     error(msg)
 
-# Read Flash
-saveFile = open("rawFlash.txt","w") 
-sector = 0
-while sector < 0x10000:
-    txData = "rawread " + hex(sector)[2:] + "\r"
-    port.write(txData.encode())
-    while 1:
-        response = port.readline()
-        response = response.decode()
-        print(response)
+# Read File
+print("read " + args.file + "\r")
+port.write(("read " + args.file + "\r").encode())
+readPort(b'Prepare for file', "Command Failed")
 
-        rxFlag = "raw "
-        if sector < 0x1000:
-            rxFlag += "0"
-        if sector < 0x100:
-            rxFlag += "0"
-        if sector < 0x10:
-            rxFlag += "0"
-        rxFlag += hex(sector)[2:].upper()
+# Receive file via xmodem
+print("Receiving file...")
+stream = open(args.file, 'wb')
+if not modem.recv(stream):
+    error("File Transfer Failed")
 
-        if rxFlag in response:
-            saveFile.write(response)
-            response = ""
-            break
-    
-    sector += 1
-
-saveFile.close()
 print("")
-print("Flash Reading Complete!")
+print("File Transfer Complete!")
 
 # Usage
-# python flashReader.py comPort
+# python flashReader.py comPort FileName
 #
 # Example
-# python flashReader.py com14
+# python flashReader.py com14 presets.ini

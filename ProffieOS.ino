@@ -393,6 +393,7 @@ struct is_same_type<T, T> { static const bool value = true; };
 #include "styles/random_flicker.h"
 #include "styles/random_per_led_flicker.h"
 #include "styles/audio_flicker.h"
+#include "styles/unstable_flicker.h"
 #include "styles/brown_noise_flicker.h"
 #include "styles/hump_flicker.h"
 #include "styles/rainbow.h"
