@@ -60,11 +60,11 @@ typedef Rgb<0, 255, 55> SpringGreen;
 typedef Rgb<14, 57, 118> SteelBlue;
 typedef Rgb<255, 31, 15> Tomato;
 typedef Rgb<255, 255, 255> White;
-typedef Rgb<255, 255, 0> Yellow;
+typedef Rgb<255, 210, 0> Yellow;
 
 typedef Rgb<000, 255, 225> IceBlue;
 typedef Rgb<100, 255, 100> SilverWhite;
 typedef Rgb<100, 000, 255> Purple;
-typedef Rgb<255, 65, 000> BrightOrange;
+typedef Rgb<255, 120, 000> BrightOrange;
 
 #endif

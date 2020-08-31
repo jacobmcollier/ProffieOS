@@ -2,7 +2,7 @@
 #include "proffieboard_v2_config.h"
 #define NUM_BLADES 1
 #define NUM_BUTTONS 2
-#define VOLUME 100
+#define VOLUME 1500
 const unsigned int maxLedsPerStrip = 144;
 #define CLASH_THRESHOLD_G 2.5
 #define ENABLE_AUDIO
@@ -15,11 +15,9 @@ const unsigned int maxLedsPerStrip = 144;
 
 #ifdef CONFIG_PRESETS
 Preset presets[] = {
-    { "Lightside", "tracks/none.wav", StyleNormalPtr<ColorChange<TrFade<100>, BLUE, IceBlue, BrightOrange, Yellow, SilverWhite, Purple, RED, GREEN>, WHITE,   300, 800>(), "Lightside"},
-    { "Darkside",  "tracks/none.wav", StyleNormalPtr<ColorChange<TrFade<100>, RED, GREEN, BLUE, IceBlue, BrightOrange, Yellow, SilverWhite, Purple>, WHITE, 300, 800>(), "Darkside"},
-    { "Darkside",  "tracks/none.wav", StyleNormalPtr<UnstableFlicker<ColorChange<TrFade<100>, RED, GREEN, BLUE, IceBlue, BrightOrange, Yellow, SilverWhite, Purple>, Black>, WHITE, 300, 800>(), "Darkside_Flicker"},
-    { "DarkSaber", "tracks/none.wav", StyleNormalPtr<ColorChange<TrFade<100>, SilverWhite, Purple, RED, GREEN, BLUE, IceBlue, BrightOrange, Yellow>, WHITE, 300, 800>(), "DarkSaber"},
-    { "DarkSaber", "tracks/none.wav", StyleNormalPtr<AudioFlicker<ColorChange<TrFade<100>, SilverWhite, Purple, RED, GREEN, BLUE, IceBlue, BrightOrange, Yellow>, Black>, WHITE, 300, 800>(), "DarkSaber_Flicker"},
+    { "Lightside", "tracks/none.wav", StyleNormalPtr<BlastFadeout<ColorChange<TrFade<100>, BLUE, IceBlue, BrightOrange, Yellow, SilverWhite, Purple, RED, GREEN>, WHITE>, WHITE, 300, 800>(), "Lightside"},
+    { "Darkside",  "tracks/none.wav", StyleNormalPtr<ColorChange<TrFade<100>, UnstableFlicker<RED, Black>, RED, GREEN, BLUE, IceBlue, BrightOrange, Yellow, SilverWhite, Purple>, WHITE, 300, 800>(), "Darkside"},
+    { "DarkSaber", "tracks/none.wav", StyleNormalPtr<ColorChange<TrFade<100>, UnstableFlicker<SilverWhite, Black>, SilverWhite, Purple, RED, GREEN, BLUE, IceBlue, BrightOrange, Yellow>, WHITE, 300, 800>(), "DarkSaber"},
 };
 
 // Takes battery voltage into account which is high right now...

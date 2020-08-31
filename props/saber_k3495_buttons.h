@@ -8,7 +8,9 @@
 // Turn On - short click while OFF
 // Turn Off - hold and wait till blade is off while ON
 // Blast Effect - short click while ON
-// Color Change Mode - short click AUX while ON to enter or exit mode, twist hilt to change color
+// Color Change Mode - Triple click power button while ON to enter or exit mode, twist hilt to change color
+// single click power button to exit color change mode
+// Can also turn off to exit color change mode
 // Volume Down - hold POWER + short click AUX while OFF (Wraps)
 // AUX
 // Next Preset - short click while OFF
@@ -73,7 +75,7 @@ public:
         if (button_disable_) {
           return true;
         }
-        
+        color_wheel_active_ = false;
         Off();
         return true;
 
@@ -82,16 +84,25 @@ public:
         if (button_disable_) {
           return true;
         }
+        
+        if (color_wheel_active_)
+        {
+          color_wheel_active_ = false;
+          ToggleColorChangeMode();
+          return true;
+        }
+        
         STDOUT.println("DoBlast");
         SaberBase::DoBlast();
         return true;
 
       // Color Change Mode
-      case EVENTID(BUTTON_AUX, EVENT_FIRST_SAVED_CLICK_SHORT, MODE_ON):
+      case EVENTID(BUTTON_POWER, EVENT_THIRD_SAVED_CLICK_SHORT, MODE_ON):
         if (button_disable_) {
           return true;
         }
         
+        color_wheel_active_ = !color_wheel_active_;
         ToggleColorChangeMode();
         return true;
 
@@ -160,6 +171,7 @@ public:
 private:
   bool pointing_down_ = false;
   bool button_disable_ = false;
+  bool color_wheel_active_ = false;
 };
 
 #endif
