@@ -16,8 +16,8 @@ const unsigned int maxLedsPerStrip = 144;
 #ifdef CONFIG_PRESETS
 Preset presets[] = {
     { "Lightside", "tracks/none.wav", StyleNormalPtr<BlastFadeout<ColorChange<TrFade<100>, BLUE, IceBlue, BrightOrange, Yellow, SilverWhite, Purple, RED, GREEN>, WHITE>, WHITE, 300, 800>(), "Lightside"},
-    { "Darkside",  "tracks/none.wav", StyleNormalPtr<ColorChange<TrFade<100>, UnstableFlicker<RED, Black>, RED, GREEN, BLUE, IceBlue, BrightOrange, Yellow, SilverWhite, Purple>, WHITE, 300, 800>(), "Darkside"},
-    { "DarkSaber", "tracks/none.wav", StyleNormalPtr<ColorChange<TrFade<100>, UnstableFlicker<SilverWhite, Black>, SilverWhite, Purple, RED, GREEN, BLUE, IceBlue, BrightOrange, Yellow>, WHITE, 300, 800>(), "DarkSaber"},
+    { "Darkside",  "tracks/none.wav", StyleNormalPtr<BlastFadeout<ColorChange<TrFade<100>, UnstableFlicker<RED, Black>, RED, GREEN, BLUE, IceBlue, BrightOrange, Yellow, SilverWhite, Purple>, WHITE>, WHITE, 300, 800>(), "Darkside"},
+    { "DarkSaber", "tracks/none.wav", StyleNormalPtr<BlastFadeout<ColorChange<TrFade<100>, UnstableFlicker<SilverWhite, Black>, SilverWhite, Purple, RED, GREEN, BLUE, IceBlue, BrightOrange, Yellow>, WHITE>, WHITE, 300, 800>(), "DarkSaber"},
 };
 
 // Takes battery voltage into account which is high right now...
@@ -74,9 +74,8 @@ struct WhiteLED {
 
 BladeConfig blades[] = {
     { 0, // Blade ID resistance
-      SimpleBladePtr<RedLED, GreenLED, BlueLED, WhiteLED,
-      //bladePowerPin1, bladePowerPin2, bladePowerPin3, bladePowerPin4>(),
-      bladePowerPin2, bladePowerPin1, bladePowerPin4, bladePowerPin3>(), // To correct pinout issue in first demo board
+      DimBlade(SimpleBladePtr<RedLED, GreenLED, BlueLED, WhiteLED,
+      bladePowerPin2, bladePowerPin1, bladePowerPin4, bladePowerPin3>()),
       CONFIGARRAY(presets),
     },
 };

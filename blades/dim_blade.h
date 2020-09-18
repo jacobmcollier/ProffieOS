@@ -3,11 +3,12 @@
 
 class DimBladeWrapper : public BladeWrapper, BladeStyle {
 public:
-  DimBladeWrapper(BladeBase* blade, int fraction) {
+  DimBladeWrapper(BladeBase* blade) {
     blade_ = blade;
-    fraction_ = fraction;
   }
+
   void set(int led, Color16 c) override {
+    uint32_t fraction_ = (SaberBase::GetCurrentBrightness());
     Color16 ret;
     ret.r = clampi32((c.r * fraction_) >> 14, 0, 65535);
     ret.g = clampi32((c.g * fraction_) >> 14, 0, 65535);
@@ -62,14 +63,10 @@ public:
   
 private:
   BladeStyle *current_style_ = nullptr;
-  int fraction_;
 };
 
-// Reduces the brightness of the blade.
-// percentage = 0 -> dark
-// percentage = 100 -> no change
-class BladeBase* DimBlade(float percentage, BladeBase* blade) {
-  return new DimBladeWrapper(blade, (int)(percentage * 16384 / 100.0));
+class BladeBase* DimBlade(BladeBase* blade) {
+  return new DimBladeWrapper(blade);
 }
 
 #endif

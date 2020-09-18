@@ -196,12 +196,21 @@ public:                                                         \
     }
   }
 
+  static uint32_t GetCurrentBrightness() {
+    return current_brightness_; // value from 0-16384
+  }
+  
+  static void SetBrightness(uint32_t v) {
+    current_brightness_ = clampi32(v, 0, 16384);
+  }
+
 private:
   static bool on_;
   static LockupType lockup_;
   static uint32_t last_motion_request_;
   static uint32_t current_variation_;
   static ColorChangeMode color_change_mode_;
+  static uint32_t current_brightness_;
   SaberBase* next_saber_;
 };
 

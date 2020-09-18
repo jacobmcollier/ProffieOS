@@ -5,8 +5,10 @@ class SaveGlobalStateFile : public ConfigFile {
 public:
   void SetVariable(const char* variable, float v) override {
     CONFIG_VARIABLE(volume, -1);
+    CONFIG_VARIABLE(brightness, -1);
   }
   int volume;
+  int brightness;
 };
 
 class SavePresetStateFile : public ConfigFile {
@@ -246,6 +248,12 @@ public:
 #endif
   }
 
+  void SaveBrightnessIfNeeded() {
+    if (SaberBase::GetCurrentBrightness() != saved_global_state.brightness) {
+      SaveGlobalState();
+    }
+  }
+
   void SaveColorChangeIfNeeded() {
 #ifdef SAVE_COLOR_CHANGE
     if (current_preset_.variation != SaberBase::GetCurrentVariation()) {
@@ -261,6 +269,7 @@ public:
 #endif
     SaveColorChangeIfNeeded();
     SaveVolumeIfNeeded();
+    SaveBrightnessIfNeeded();
   }
 
   // Select preset (font/style)
@@ -429,12 +438,15 @@ public:
 
   SaveGlobalStateFile saved_global_state;
   void RestoreGlobalState() {
-#ifdef SAVE_VOLUME
     saved_global_state.ReadINIFromDir(NULL, "global");
+#ifdef SAVE_VOLUME
     if (saved_global_state.volume >= 0) {
       dynamic_mixer.set_volume(clampi32(saved_global_state.volume, 0, VOLUME));
     }
-#endif    
+#endif
+    if (saved_global_state.brightness >= 0) {
+      SaberBase::SetBrightness(saved_global_state.brightness);
+    }
   }
 
   void WriteGlobalState(const char* filename) {
@@ -446,18 +458,20 @@ public:
 #ifdef ENABLE_AUDIO    
     out.write_key_value("volume", muted_volume_ ? muted_volume_ : dynamic_mixer.get_volume());
 #endif    
+    out.write_key_value("brightness", SaberBase::GetCurrentBrightness());
     out.write_key_value("end", "1");
     out.Close();
     LOCK_SD(false);
   }
 
   void SaveGlobalState() {
-#ifdef SAVE_VOLUME
     STDOUT.println("Saving Global State");
     WriteGlobalState("global.tmp");
     WriteGlobalState("global.ini");
+#ifdef SAVE_VOLUME
     saved_global_state.volume = dynamic_mixer.get_volume();
-#endif    
+#endif
+    saved_global_state.brightness = SaberBase::GetCurrentBrightness();
   }
   
   void FindBladeAgain() {
@@ -890,6 +904,16 @@ public:
   }
 #endif // DISABLE_COLOR_CHANGE  
 
+  void ToggleDimMode() {
+    if (16384 == SaberBase::GetCurrentBrightness()) {
+      STDOUT << "Brightness set to 50%\n";
+      SaberBase::SetBrightness(16384*0.25);
+    } else {
+      STDOUT << "Brightness set to 100%\n";
+      SaberBase::SetBrightness(16384);
+    }
+  }
+
   void PrintButton(uint32_t b) {
     if (b & BUTTON_POWER) STDOUT.print("Power");
     if (b & BUTTON_AUX) STDOUT.print("Aux");
@@ -1250,6 +1274,11 @@ public:
       return true;
     }
 #endif
+
+    if (!strcmp(cmd, "dimmode")) {
+      ToggleDimMode();
+      return true;
+    }
 
 #ifdef ENABLE_SD
     if (!strcmp(cmd, "list_tracks")) {

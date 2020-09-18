@@ -4,19 +4,18 @@
 // Button config:
 //
 // 2 Button:
-// POWER
-// Turn On - short click while OFF
-// Turn Off - hold and wait till blade is off while ON
-// Blast Effect - short click while ON
+// Turn On - short click power button while OFF
+// Turn Off - hold power button and wait till blade is off while ON
+// Blast Effect - short click power button while ON
 // Color Change Mode - Triple click power button while ON to enter or exit mode, twist hilt to change color
-// single click power button to exit color change mode
-// Can also turn off to exit color change mode
+//  Single click power button to exit color change mode
+//  Can also turn off to exit color change mode
 // Volume Down - hold POWER + short click AUX while OFF (Wraps)
-// AUX
-// Next Preset - short click while OFF
-// Lockup - hold while ON
-// Battery level - hold while off
-// Button Lock - triple click while ON
+// Next Preset - short click AUX button while OFF
+// Lockup - hold AUX button while ON
+// Battery level - hold AUX button while OFF
+// Button Lock - triple click AUX button while ON
+// Dim Blade - triple click AUX button while OFF
 
 
 #ifndef PROPS_SABER_K3495_BUTTONS_H
@@ -107,7 +106,7 @@ public:
         return true;
 
       // Volume Down
-      case EVENTID(BUTTON_AUX, EVENT_FIRST_CLICK_SHORT, MODE_OFF | BUTTON_POWER):
+      case EVENTID(BUTTON_AUX, EVENT_FIRST_SAVED_CLICK_SHORT, MODE_OFF | BUTTON_POWER):
         STDOUT.println("Volume Down");
         if (dynamic_mixer.get_volume() > 0) {
           dynamic_mixer.set_volume(std::max<int>(0, dynamic_mixer.get_volume() - VOLUME * 0.25));
@@ -121,7 +120,7 @@ public:
         return true;
 
       // Next Preset
-      case EVENTID(BUTTON_AUX, EVENT_FIRST_CLICK_SHORT, MODE_OFF):
+      case EVENTID(BUTTON_AUX, EVENT_FIRST_SAVED_CLICK_SHORT, MODE_OFF):
         next_preset();
         return true;
 
@@ -156,6 +155,12 @@ public:
           button_disable_ = true;
         }
         beeper.Beep(0.5, 2000.0);
+        return true;
+
+      // Dim Blade
+      case EVENTID(BUTTON_AUX, EVENT_THIRD_SAVED_CLICK_SHORT, MODE_OFF):
+        ToggleDimMode();
+        beeper.Beep(0.5, 1000.0);
         return true;
 
       // Lockup End
