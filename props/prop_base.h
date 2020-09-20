@@ -907,7 +907,7 @@ public:
   void ToggleDimMode() {
     if (16384 == SaberBase::GetCurrentBrightness()) {
       STDOUT << "Brightness set to 50%\n";
-      SaberBase::SetBrightness(16384*0.25);
+      SaberBase::SetBrightness(16384*0.35);
     } else {
       STDOUT << "Brightness set to 100%\n";
       SaberBase::SetBrightness(16384);
