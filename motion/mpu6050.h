@@ -108,7 +108,6 @@ public:
     while (1) {
       unsigned char databuffer[6];
 
-      STDOUT.print("Motion setup ... ");
       writeByte(PWR_MGMT_1, 0); // wake up
       writeByte(CONFIG, 1);     // digital filter config ~180Hz, 1khz rate, 2ms delay
       writeByte(SMPLRT_DIV, 0); // sample rate = 1khz / 1
@@ -118,9 +117,9 @@ public:
       writeByte(INT_ENABLE, 1); // enable data ready interrupt
 
       if (readByte(WHO_AM_I) == 0x68) {
-        STDOUT.println("done.");
+        STDOUT.println("Motion setup done");
       } else {
-        STDOUT.println("failed.");
+        STDOUT.println("Motion setup failed");
       }
 
       while (1) {

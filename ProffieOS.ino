@@ -1045,6 +1045,18 @@ class Commands : public CommandParser {
     }
 #endif
 
+    if (!strcmp(cmd, "ledtest")) {
+      pinMode(bladePowerPin1, OUTPUT);
+      pinMode(bladePowerPin2, OUTPUT);
+      pinMode(bladePowerPin3, OUTPUT);
+      pinMode(bladePowerPin4, OUTPUT);
+      digitalWrite(bladePowerPin1, HIGH);
+      digitalWrite(bladePowerPin2, HIGH);
+      digitalWrite(bladePowerPin3, HIGH);
+      digitalWrite(bladePowerPin4, HIGH);
+      return true;
+    }
+
 #ifndef DISABLE_DIAGNOSTIC_COMMANDS
     if (!strcmp(cmd, "top")) {
 #ifdef TEENSYDUINO

@@ -15,9 +15,9 @@ const unsigned int maxLedsPerStrip = 144;
 
 #ifdef CONFIG_PRESETS
 Preset presets[] = {
-    { "Lightside", "tracks/none.wav", StyleNormalPtr<BlastFadeout<ColorChange<TrFade<100>, BLUE, IceBlue, BrightOrange, Yellow, SilverWhite, Purple, RED, GREEN>, WHITE>, WHITE, 300, 800>(), "Lightside"},
-    { "Darkside",  "tracks/none.wav", StyleNormalPtr<BlastFadeout<ColorChange<TrFade<100>, UnstableFlicker<RED, Black>, RED, GREEN, BLUE, IceBlue, BrightOrange, Yellow, SilverWhite, Purple>, WHITE>, WHITE, 300, 800>(), "Darkside"},
-    { "DarkSaber", "tracks/none.wav", StyleNormalPtr<BlastFadeout<ColorChange<TrFade<100>, UnstableFlicker<SilverWhite, Black>, SilverWhite, Purple, RED, GREEN, BLUE, IceBlue, BrightOrange, Yellow>, WHITE>, WHITE, 300, 800>(), "DarkSaber"},
+    { "Lightside", "tracks/none.wav", StyleNormalPtr<BlastFadeout<ColorChange<TrFade<100>, Blue, IceBlue, CoolBlue, PerfectCyan, Teal, ViridianGreen, Green, Lime, Yellow, Amber, BrightOrange, OrangeRed, Red, Purple, Violet, MediumPink, SilverWhite>, WHITE>, WHITE, 300, 800>(), "Lightside"},
+    { "Darkside",  "tracks/none.wav", StyleNormalPtr<BlastFadeout<ColorChange<TrFade<100>, UnstableFlicker<RED, Black>, Blue, IceBlue, CoolBlue, PerfectCyan, Teal, ViridianGreen, Green, Lime, Yellow, Amber, BrightOrange, OrangeRed, Red, Purple, Violet, MediumPink, SilverWhite>, WHITE>, WHITE, 300, 800>(), "Darkside"},
+    { "DarkSaber", "tracks/none.wav", StyleNormalPtr<BlastFadeout<ColorChange<TrFade<100>, UnstableFlicker<SilverWhite, Black>, Blue, IceBlue, CoolBlue, PerfectCyan, Teal, ViridianGreen, Green, Lime, Yellow, Amber, BrightOrange, OrangeRed, Red, Purple, Violet, MediumPink, SilverWhite>, WHITE>, WHITE, 300, 800>(), "DarkSaber"},
 };
 
 // Takes battery voltage into account which is high right now...
