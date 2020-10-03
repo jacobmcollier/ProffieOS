@@ -1045,15 +1045,48 @@ class Commands : public CommandParser {
     }
 #endif
 
-    if (!strcmp(cmd, "ledtest")) {
+    if (!strcmp(cmd, "redledtest")) {
+      pinMode(bladePowerPin1, OUTPUT);
+      pinMode(bladePowerPin2, OUTPUT);
+      pinMode(bladePowerPin3, OUTPUT);
+      pinMode(bladePowerPin4, OUTPUT);
+      digitalWrite(bladePowerPin1, LOW);
+      digitalWrite(bladePowerPin2, HIGH);
+      digitalWrite(bladePowerPin3, LOW);
+      digitalWrite(bladePowerPin4, LOW);
+      return true;
+    }
+    if (!strcmp(cmd, "greenledtest")) {
       pinMode(bladePowerPin1, OUTPUT);
       pinMode(bladePowerPin2, OUTPUT);
       pinMode(bladePowerPin3, OUTPUT);
       pinMode(bladePowerPin4, OUTPUT);
       digitalWrite(bladePowerPin1, HIGH);
-      digitalWrite(bladePowerPin2, HIGH);
-      digitalWrite(bladePowerPin3, HIGH);
+      digitalWrite(bladePowerPin2, LOW);
+      digitalWrite(bladePowerPin3, LOW);
+      digitalWrite(bladePowerPin4, LOW);
+      return true;
+    }
+    if (!strcmp(cmd, "blueledtest")) {
+      pinMode(bladePowerPin1, OUTPUT);
+      pinMode(bladePowerPin2, OUTPUT);
+      pinMode(bladePowerPin3, OUTPUT);
+      pinMode(bladePowerPin4, OUTPUT);
+      digitalWrite(bladePowerPin1, LOW);
+      digitalWrite(bladePowerPin2, LOW);
+      digitalWrite(bladePowerPin3, LOW);
       digitalWrite(bladePowerPin4, HIGH);
+      return true;
+    }
+    if (!strcmp(cmd, "whiteledtest")) {
+      pinMode(bladePowerPin1, OUTPUT);
+      pinMode(bladePowerPin2, OUTPUT);
+      pinMode(bladePowerPin3, OUTPUT);
+      pinMode(bladePowerPin4, OUTPUT);
+      digitalWrite(bladePowerPin1, LOW);
+      digitalWrite(bladePowerPin2, LOW);
+      digitalWrite(bladePowerPin3, HIGH);
+      digitalWrite(bladePowerPin4, LOW);
       return true;
     }
 

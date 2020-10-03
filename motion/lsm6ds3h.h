@@ -106,7 +106,6 @@ public:
       first_motion_ = true;
       first_accel_ = true;
       
-      STDOUT.print("Motion setup ... ");
       while (!I2CLock()) YIELD();
 
       I2C_WRITE_BYTE_ASYNC(CTRL1_XL, 0x88);  // 1.66kHz accel, 4G range
@@ -123,9 +122,9 @@ public:
       pinMode(motionSensorInterruptPin, INPUT);
       I2C_READ_BYTES_ASYNC(WHO_AM_I, databuffer, 1);
       if (databuffer[0] == 105) {
-        STDOUT.println("done.");
+        STDOUT.println("Motion setup done");
       } else {
-        STDOUT.println("failed.");
+        STDOUT.println("Motion setup failed");
 	goto i2c_timeout;
       }
       I2CUnlock();
