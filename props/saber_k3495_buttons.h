@@ -160,7 +160,6 @@ public:
       // Dim Blade
       case EVENTID(BUTTON_AUX, EVENT_THIRD_SAVED_CLICK_SHORT, MODE_OFF):
         ToggleDimMode();
-        beeper.Beep(0.5, 1000.0);
         return true;
 
       // Lockup End

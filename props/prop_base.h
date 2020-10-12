@@ -908,9 +908,13 @@ public:
     if (16384 == SaberBase::GetCurrentBrightness()) {
       STDOUT << "Brightness set to 50%\n";
       SaberBase::SetBrightness(16384*0.35);
+      beeper.Beep(0.25, 1000.0);
+      beeper.Beep(0.25, 800.0);
     } else {
       STDOUT << "Brightness set to 100%\n";
       SaberBase::SetBrightness(16384);
+      beeper.Beep(0.25, 1000.0);
+      beeper.Beep(0.25, 1200.0);
     }
   }
 
