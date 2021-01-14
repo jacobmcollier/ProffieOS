@@ -26,6 +26,7 @@
         "functional": "cpp",
         "limits": "cpp",
         "tuple": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "cmath": "cpp"
     }
 }

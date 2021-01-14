@@ -22,10 +22,23 @@ BatteryMonitor() : reader_(batteryLevelPin,
   float battery_percent() {
     // Energy is roughly proportional to voltage squared.
     float v = battery();
-    float min_v = 3.0;
-    float max_v = 4.2;
-    return 100.0 * (v * v - min_v * min_v) / (max_v * max_v - min_v * min_v);
-//    return 100.0 * (v - min_v) / (max_v - min_v);
+    float min_v = 3.2;
+    float max_v = 4.05;
+    float p = 100.0 * (v * v - min_v * min_v) / (max_v * max_v - min_v * min_v);
+
+    // Handle voltage recovery on a low battery
+    if ((p > 30) || (p < last_percent_)) {
+      last_percent_ = p;
+    }
+
+    // Bounds check
+    if (last_percent_ < 0) {
+      last_percent_ = 0;
+    } else if (last_percent_ > 100) {
+      last_percent_ = 100;
+    }
+    
+    return last_percent_;
   }
   void SetPinHigh(bool go_high) {
     if (go_high) {
@@ -138,6 +151,7 @@ private:
 
   bool loaded_ = false;
   float last_voltage_ = 0.0;
+  float last_percent_ = 0.0;
   uint32_t last_voltage_read_time_ = 0;
   uint32_t last_print_millis_;
   uint32_t low_count_ = 0;
